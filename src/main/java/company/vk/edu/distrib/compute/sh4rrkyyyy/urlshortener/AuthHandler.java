@@ -9,8 +9,6 @@ public class AuthHandler implements HttpHandler {
     private final HttpHandler handler;
     private final DaoString usersDao;
     private static final String AUTH_HEADER = "Authorization";
-    public static final String WWW_AUTHENTICATE = "WWW-Authenticate";
-    public static final String BASIC_AUTH_CHALLENGE = "Basic realm=\"url-shortener\"";
 
     public AuthHandler(HttpHandler handler, DaoString usersDao) {
         this.handler = handler;
@@ -26,8 +24,8 @@ public class AuthHandler implements HttpHandler {
             isAuth = false;
         }
         if (!isAuth) {
-            exchange.getResponseHeaders().set(WWW_AUTHENTICATE, BASIC_AUTH_CHALLENGE);
-            HttpUtils.sendEmptyRsp(exchange, HttpStatus.UNAUTHORIZED);
+            exchange.getResponseHeaders().set("WWW-Authenticate", "Basic realm=\"url-shortener\"");
+            HttpUtils.sendEmptyRsp(exchange, 401);
             return;
         }
         handler.handle(exchange);
